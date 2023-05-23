@@ -20,5 +20,9 @@ public class Sound
 
 
     public bool loop;
+    public bool preLoad;
+    public bool onAwake;
+
+    public GameObject obj;
 
 }

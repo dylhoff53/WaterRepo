@@ -1,11 +1,11 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class StartSceneManager : MonoBehaviour
 {
-    public float transitionTime = 5.0f;
-    public float transitionTime2 = 0.02f;
+    public float transitionTime = 10.0f;
     public int counter = 0;
 
     [HideInInspector]
@@ -15,25 +15,22 @@ public class StartSceneManager : MonoBehaviour
 
     public GameObject canvas;
 
+    public float AudioTimer;
+
     public void Awake()
     {
         FindObjectOfType<AudioManager>().Play("StartMenu");
         audio1 = FindObjectOfType<AudioManager>().sounds[0].source;
         audio2 = FindObjectOfType<AudioManager>().sounds[1].source;
+        audio2.volume = 0f;
+        AudioTimer = audio1.clip.length - 2.0f;
+        Invoke("ChangeSongs", AudioTimer);
     }
 
-    public void Update()
-    {
-        if(!audio1.isPlaying && counter == 0)
-        {
-            FindObjectOfType<AudioManager>().Play("StartMenuCon");
-            counter++;
-        }
-    }
     public void OnStartButton()
     {
-        Transition();
-        FadeMusic();
+        StartCoroutine(FadeMusic(0.1f, 0.1f, 0.1f));
+        //StartCoroutine(Transition(canvas.GetComponent<CanvasGroup>().alpha, 0.1f, 0.1f));
 
         Invoke("LoadNextScene", transitionTime);
     }
@@ -43,22 +40,41 @@ public class StartSceneManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
-    public void Transition()
+    IEnumerator FadeMusic(float TimeInterval, float AudioValueInterval, float UIValueInterval)
     {
-        if(canvas.GetComponent<CanvasGroup>().alpha > 0.0f)
+        for( float i = 1f; i > 0.0f; i -= 0.1f)
         {
-            canvas.GetComponent<CanvasGroup>().alpha -= .1f;
+            audio1.volume -= AudioValueInterval;
+            audio2.volume -= AudioValueInterval;
+            canvas.GetComponent<CanvasGroup>().alpha -= UIValueInterval;
+            yield return new WaitForSeconds(TimeInterval);
         }
-        Invoke("Transition", transitionTime2); 
+    }
+    
+
+   /* IEnumerator Transition(float x, float y, float z)
+    {
+        for(float i = 1f; i > 0.0f; i -= z)
+        {
+            x = i;
+            yield return new WaitForSeconds(y);
+        }
+    }
+   */
+
+    public void ChangeSongs()
+    {
+        FindObjectOfType<AudioManager>().Play("StartMenuCon");
+        StartCoroutine(CrossFadeAudio());
     }
 
-    public void FadeMusic()
+    IEnumerator CrossFadeAudio()
     {
-        if(audio1.volume > 0.0f || audio2.volume > 0.0f)
+        for (float i = 0f; i < 1f; i += 0.1f)
         {
-            audio1.volume -= .1f;
-            audio2.volume -= .1f;
+            audio1.volume -= 0.075f;
+            audio2.volume += 0.075f;
+            yield return new WaitForSeconds(0.1f);
         }
-        Invoke("FadeMusic", transitionTime2);
     }
 }

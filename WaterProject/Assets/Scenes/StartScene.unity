@@ -471,12 +471,16 @@ MonoBehaviour:
     pitch: 1
     source: {fileID: 0}
     loop: 0
+    preLoad: 0
+    onAwake: 1
   - name: StartMenuCon
     clip: {fileID: 8300000, guid: 3ae37770df5a99c4f8f051c33ab7354e, type: 3}
     volume: 0.75
     pitch: 1
     source: {fileID: 0}
     loop: 1
+    preLoad: 1
+    onAwake: 0
 --- !u!1 &738820895
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,8 +511,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transitionTime: 2.5
-  transitionTime2: 0.2
+  counter: 0
+  audio1: {fileID: 0}
+  audio2: {fileID: 0}
   canvas: {fileID: 1967596472}
+  AudioTimer: 0
 --- !u!4 &738820897
 Transform:
   m_ObjectHideFlags: 0
